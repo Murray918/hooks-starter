@@ -8,17 +8,6 @@ const App = () => {
 	const [name, setName] = useTitleInput("")
 	const ref = useRef()
 
-	// imagine that this is a heavier function which could bog down re-render time if it is called after every on change event
-	const reversWord = word => {
-		console.log("function called")
-		return word
-			.split("")
-			.reverse()
-			.join("")
-	}
-
-	const TitleReversed = useMemo(() => reversWord(name), [name])
-
 	return (
 		<UserContext.Provider value={{ user: true }}>
 			<div
