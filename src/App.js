@@ -1,34 +1,50 @@
-import React, { useState } from "react"
+import React, { useRef, createContext, useMemo } from "react"
 import Toggle from "./Toggle"
+import useTitleInput from "./FormHooks"
+
+export const UserContext = createContext()
 
 const App = () => {
-	const [name, setName] = useState("")
+	const [name, setName] = useTitleInput("")
+	const ref = useRef()
+
+	// imagine that this is a heavier function which could bog down re-render time if it is called after every on change event
+	const reversWord = word => {
+		console.log("function called")
+		return word
+			.split("")
+			.reverse()
+			.join("")
+	}
+
+	const TitleReversed = useMemo(() => reversWord(name), [name])
 
 	return (
-		<div className="main-wrapper">
-			<h1>Level Up Dishes</h1>
-			<Toggle />
-			<form
-				onSubmit={event => {
-					event.preventDefault()
-					formSubmit(name, setName)
-				}}
+		<UserContext.Provider value={{ user: true }}>
+			<div
+				className="main-wrapper"
+				ref={ref}
+				onClick={() => ref.current.classList.add("new-party-class")}
 			>
-				<input
-					type="text"
-					name="value"
-					id="on-changer"
-					value={name}
-					onChange={event => setName(event.target.value)}
-				/>
-			</form>
-		</div>
+				<h1>Level Up Dishes</h1>
+				<Toggle>
+					<form
+						onSubmit={event => {
+							event.preventDefault()
+						}}
+					>
+						<input
+							type="text"
+							name="value"
+							value={name}
+							onChange={event => setName(event.target.value)}
+						/>
+					</form>
+				</Toggle>
+				{/* <Counter /> */}
+			</div>
+		</UserContext.Provider>
 	)
-}
-
-const formSubmit = (value, setValue) => {
-	console.log(`hello the form has submitted for ${value}`)
-	setValue("")
 }
 
 export default App
