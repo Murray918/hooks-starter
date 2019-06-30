@@ -1,3 +1,4 @@
 import useBodyScrollLock from "./bodyScrollLockdown"
 import useTitleInput from "./useTitleInput"
-export { useTitleInput, useBodyScrollLock }
+import useOnClickOutside from "./useOnClickOutside"
+export { useTitleInput, useBodyScrollLock, useOnClickOutside }

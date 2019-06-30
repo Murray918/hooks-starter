@@ -36,9 +36,7 @@ const App = () => {
 				onClick={() => ref.current.classList.add("new-party-class")}
 			>
 				<h1>Level Up Dishes</h1>
-				<Toggle>
-					<DishForm name={name} submit={handleSubmit} hook={useTitleInput} />
-				</Toggle>
+				<Toggle />
 				<div>
 					{dishes.map((dish, index) => {
 						return (
