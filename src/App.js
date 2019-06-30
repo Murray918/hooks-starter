@@ -1,8 +1,9 @@
-import React, { useRef, useState, createContext, useEffect } from "react"
+import React, { useRef, createContext } from "react"
 import Toggle from "./Toggle"
 import useAbortableFetch from "use-abortable-fetch"
-import { useTitleInput } from "./CustomHooks"
+import { useSpring, animated } from "react-spring"
 
+// set up context
 export const UserContext = createContext()
 
 const App = () => {
@@ -13,7 +14,7 @@ const App = () => {
 
 	const { data } = useAbortableFetch(url)
 
-	if (!data) return null
+	const props = useSpring({ opacity: 1, from: { opacity: 0 } })
 
 	return (
 		<UserContext.Provider value={{ user: true }}>
@@ -22,22 +23,23 @@ const App = () => {
 				ref={ref}
 				onClick={() => ref.current.classList.add("new-party-class")}
 			>
-				<h1>Level Up Dishes</h1>
+				<animated.h1 style={props}>Level Up Dishes</animated.h1>
 				<Toggle />
 				<div>
-					{data.map((dish, index) => {
-						return (
-							<article className="dish-card dish-card--withImage" key={index}>
-								<h3>{dish.name}</h3>
-								<p>{dish.desc}</p>
-								<div className="ingredients">
-									{dish.ingredients.map((ingredient, index) => (
-										<span key={index}>{ingredient}</span>
-									))}
-								</div>
-							</article>
-						)
-					})}
+					{data &&
+						data.map((dish, index) => {
+							return (
+								<article className="dish-card dish-card--withImage" key={index}>
+									<h3>{dish.name}</h3>
+									<p>{dish.desc}</p>
+									<div className="ingredients">
+										{dish.ingredients.map((ingredient, index) => (
+											<span key={index}>{ingredient}</span>
+										))}
+									</div>
+								</article>
+							)
+						})}
 				</div>
 			</div>
 		</UserContext.Provider>
@@ -47,11 +49,6 @@ const App = () => {
 export default App
 
 // all of these functions below could be extracted into other files
-async function fetchDishes(url, setState) {
-	const result = await fetch(url)
-	const data = await result.json()
-	setState(data)
-}
 
 function submitForm(state) {
 	console.log(state)
