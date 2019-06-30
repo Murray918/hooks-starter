@@ -1,32 +1,19 @@
 import React, { useRef, useState, createContext, useEffect } from "react"
 import Toggle from "./Toggle"
-import DishForm from "./DishForm"
+import useAbortableFetch from "use-abortable-fetch"
 import { useTitleInput } from "./CustomHooks"
 
 export const UserContext = createContext()
 
 const App = () => {
-	//state for the title input
-	const [name, setName] = useTitleInput("")
-
-	//this is the api call initial state
-	const [dishes, setDishes] = useState([])
+	const url = "https://my-json-server.typicode.com/leveluptuts/fakeapi/dishes"
 
 	//this is the the ref we use to actually interact with the dom
 	const ref = useRef()
 
-	const handleSubmit = event => {
-		event.preventDefault()
-		submitForm(name)
-	}
+	const { data } = useAbortableFetch(url)
 
-	//if we don't pas an empty array useEffect will create an infinite state setting loop
-	useEffect(() => {
-		fetchDishes(
-			"https://my-json-server.typicode.com/leveluptuts/fakeapi/dishes",
-			setDishes
-		)
-	}, [])
+	if (!data) return null
 
 	return (
 		<UserContext.Provider value={{ user: true }}>
@@ -38,7 +25,7 @@ const App = () => {
 				<h1>Level Up Dishes</h1>
 				<Toggle />
 				<div>
-					{dishes.map((dish, index) => {
+					{data.map((dish, index) => {
 						return (
 							<article className="dish-card dish-card--withImage" key={index}>
 								<h3>{dish.name}</h3>
